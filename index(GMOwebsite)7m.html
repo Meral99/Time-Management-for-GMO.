@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Management for GMO</title>
+    <!-- إضافة مكتبة Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 50px;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .date-input-container {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input-container input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        .date-input-container button {
+            padding: 10px 20px;
+            background-color: #ffcccb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .date-input-container button:hover {
+            background-color: #ffb6c1;
+        }
+
+        .schedule-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .schedule-container input {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+
+        .add-task-button {
+            padding: 10px 20px;
+            background-color: #ffcccb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 10px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        .add-task-button:hover {
+            background-color: #ffb6c1;
+        }
+
+        .saved-dates-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .date-box {
+            padding: 15px;
+            border: 2px solid #ffcccb;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 16px;
+            width: 150px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        .date-box:hover {
+            background-color: #ffb6c1;
+        }
+
+        /* تنسيق أيقونة سلة المهملات */
+        .delete-icon {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: #d6336c; /* اللون الوردي الغامق */
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .delete-icon:hover {
+            color: #c1356d; /* لون أغمق عند التمرير */
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        /* شاشة ترحيب */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            font-size: 18px;
+            z-index: 9999;
+        }
+
+        .welcome-screen h2 {
+            margin-bottom: 20px;
+        }
+
+        .welcome-screen button {
+            padding: 10px 20px;
+            background-color: #ffcccb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .welcome-screen button:hover {
+            background-color: #ffb6c1;
+        }
+
+        /* Media Queries لتحسين العرض على الشاشات الصغيرة */
+        @media (max-width: 767px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .date-input-container input, .date-input-container button {
+                width: 100%;
+            }
+
+            .add-task-button {
+                width: 100%;
+            }
+        }
+
+        /* تنسيق أيقونة الحفظ الجديدة */
+        .save-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            background-color: white;
+            color: black;
+            border: 2px solid #ffcccb;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .save-button:hover {
+            background-color: #ffcccb;
+        }
+
+        .save-icon {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- شاشة ترحيب -->
+<div id="welcome-screen" class="welcome-screen">
+    <h2>Ghada!</h2>
+    <p>!مرحبا بكي في موقعك لتنظيم وقتك ومهماتك</p>
+    <p>.هذا النظام سيساعدكي في إضافة التواريخ وتنظيم المهام اليومية</p>
+    <p>.أتمنى أن تحظي بيوم سعيد ومبهج ملئ بالإنجازات</p>
+    <button onclick="closeWelcomeScreen()">ابدأ</button>
+</div>
+
+<div class="container">
+    <div class="date-input-container">
+        <input type="date" id="date-input">
+        <button onclick="addDate()">إضافة تاريخ</button>
+    </div>
+
+    <div id="saved-dates-container" class="saved-dates-container"></div>
+
+    <div id="schedule-container" class="schedule-container" style="display: none;">
+        <h3>جدول اليوم</h3>
+        <div id="tasks-container">
+            <input type="text" id="task1" placeholder="أضف مهمة 1">
+            <input type="text" id="task2" placeholder="أضف مهمة 2">
+            <input type="text" id="task3" placeholder="أضف مهمة 3">
+            <input type="text" id="task4" placeholder="أضف مهمة 4">
+        </div>
+        <button class="add-task-button" onclick="addNewTask()">إضافة مهمة جديدة</button>
+
+        <!-- إضافة أيقونة الحفظ -->
+        <button class="save-button" onclick="saveSchedule()">
+            <i class="fas fa-save save-icon"></i>
+            Save
+        </button>
+    </div>
+
+    <div id="message-container" class="message"></div>
+</div>
+
+<script>
+    let db;
+
+    const request = indexedDB.open('TimeManagementDB', 1);
+
+    request.onupgradeneeded = function(event) {
+        db = event.target.result;
+        if (!db.objectStoreNames.contains('dates')) {
+            const store = db.createObjectStore('dates', { keyPath: 'date' });
+            store.createIndex('date', 'date', { unique: true });
+        }
+    };
+
+    request.onsuccess = function(event) {
+        db = event.target.result;
+        loadSavedDates();
+    };
+
+    request.onerror = function(event) {
+        console.error('فشل فتح قاعدة البيانات:', event.target.error);
+    };
+
+    function saveDate(date, tasks) {
+        const transaction = db.transaction(['dates'], 'readwrite');
+        const store = transaction.objectStore('dates');
+        const data = { date, tasks };
+
+        const request = store.put(data);
+
+        request.onsuccess = function() {
+            loadSavedDates();
+            showMessage('تم حفظ التاريخ والمهام بنجاح', 'success');
+        };
+
+        request.onerror = function(event) {
+            showMessage('حدث خطأ أثناء حفظ التاريخ والمهام', 'error');
+        };
+    }
+
+    function loadSavedDates() {
+        const transaction = db.transaction(['dates'], 'readonly');
+        const store = transaction.objectStore('dates');
+        const request = store.getAll();
+
+        request.onsuccess = function(event) {
+            const data = event.target.result;
+            const container = document.getElementById('saved-dates-container');
+            container.innerHTML = '';
+
+            data.forEach(item => {
+                const dateBox = document.createElement('div');
+                dateBox.className = 'date-box';
+                dateBox.textContent = item.date;
+                const deleteIcon = document.createElement('i');
+                deleteIcon.className = 'fas fa-trash delete-icon';
+                deleteIcon.onclick = function () {
+                    deleteDate(item.date);
+                };
+                dateBox.appendChild(deleteIcon);
+                dateBox.onclick = function () {
+                    showDailySchedule(item.date);
+                };
+                container.appendChild(dateBox);
+            });
+        };
+
+        request.onerror = function(event) {
+            console.error('فشل تحميل التواريخ:', event.target.error);
+        };
+    }
+
+    function deleteDate(date) {
+        const transaction = db.transaction(['dates'], 'readwrite');
+        const store = transaction.objectStore('dates');
+        const request = store.delete(date);
+
+        request.onsuccess = function() {
+            loadSavedDates();
+            showMessage('تم حذف التاريخ بنجاح', 'success');
+        };
+
+        request.onerror = function(event) {
+            showMessage('حدث خطأ أثناء حذف التاريخ', 'error');
+        };
+    }
+
+    function showDailySchedule(date) {
+        document.getElementById("schedule-container").style.display = "block";
+        const transaction = db.transaction(['dates'], 'readonly');
+        const store = transaction.objectStore('dates');
+        const request = store.get(date);
+
+        request.onsuccess = function(event) {
+            const data = event.target.result;
+            if (data) {
+                document.getElementById("task1").value = data.tasks[0] || '';
+                document.getElementById("task2").value = data.tasks[1] || '';
+                document.getElementById("task3").value = data.tasks[2] || '';
+                document.getElementById("task4").value = data.tasks[3] || '';
+            } else {
+                alert("لا توجد مهام محفوظة لهذا التاريخ.");
+            }
+        };
+    }
+
+    function addNewTask() {
+        const tasksContainer = document.getElementById("tasks-container");
+        const newTaskInput = document.createElement("input");
+        newTaskInput.type = "text";
+        newTaskInput.placeholder = "أضف مهمة جديدة";
+        tasksContainer.appendChild(newTaskInput);
+    }
+
+    function saveSchedule() {
+        const dateInput = document.getElementById("date-input").value;
+        const tasks = [];
+        const taskInputs = document.querySelectorAll("#tasks-container input");
+
+        taskInputs.forEach(input => {
+            tasks.push(input.value);
+        });
+
+        if (dateInput) {
+            saveDate(dateInput, tasks);
+        } else {
+            showMessage("يرجى اختيار تاريخ.", 'error');
+        }
+    }
+
+    function addDate() {
+        const dateInput = document.getElementById("date-input");
+        const dateValue = dateInput.value;
+
+        if (dateValue) {
+            saveDate(dateValue, []);  // حفظ التاريخ بدون مهام مبدئيًا
+            dateInput.value = '';  // مسح الحقل بعد إضافة التاريخ
+        } else {
+            showMessage("يرجى اختيار تاريخ.", 'error');
+        }
+    }
+
+    function showMessage(message, type) {
+        const messageContainer = document.getElementById("message-container");
+        messageContainer.className = `message ${type}`;
+        messageContainer.textContent = message;
+    }
+
+    function closeWelcomeScreen() {
+        const welcomeScreen = document.getElementById("welcome-screen");
+        welcomeScreen.style.display = "none";
+    }
+
+    window.onload = loadSavedDates;
+</script>
+
+</body>
+</html>
